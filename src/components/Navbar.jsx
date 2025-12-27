@@ -8,6 +8,10 @@ export default function Navbar() {
       <NavLink to="/admission">Admission</NavLink>
       <NavLink to="/courses">Courses</NavLink>
       <NavLink to="/events">Events</NavLink>
+
+      {/* ✅ FIXED */}
+      <NavLink to="/notice-board">Notice Board</NavLink>
+
       <NavLink to="/contact">Contact</NavLink>
     </nav>
   );

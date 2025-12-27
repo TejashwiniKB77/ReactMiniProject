@@ -1,37 +1,48 @@
+import { useEffect, useState } from "react";
 import "../styles/style2.css";
 
 export default function Admission() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    stream: "",
+    message: "",
+  });
+
+  const [success, setSuccess] = useState("");
+
+  // Load saved data
+  useEffect(() => {
+    const saved = localStorage.getItem("admissionEnquiry");
+    if (saved) {
+      setForm(JSON.parse(saved));
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const form = e.target;
-
-    const enquiry = {
-      name: form.name.value,
-      email: form.email.value,
-      phone: form.phone.value,
-      stream: form.stream.value,
-      message: form.message.value,
-    };
-
-    if (!enquiry.name || !enquiry.email || !enquiry.phone || !enquiry.stream) {
-      alert("Please fill all required fields");
-      return;
-    }
-
-    if (!window.confirm("Do you want to submit the enquiry?")) return;
-
-    localStorage.setItem("admissionEnquiry", JSON.stringify(enquiry));
-    alert("Enquiry submitted successfully");
-    form.reset();
+    localStorage.setItem("admissionEnquiry", JSON.stringify(form));
+    setSuccess("Enquiry submitted successfully!");
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      stream: "",
+      message: "",
+    });
   };
 
   return (
     <main className="container">
-      {/* ADMISSION INTRO */}
-      <section className="admission-intro">
-        <h2 className="admission-title">Admission Process 2025–26</h2>
 
+      {/* ================= ADMISSION PROCESS ================= */}
+      <section className="admission-intro">
+        <h2>Admission Process 2025–26</h2>
         <ol>
           <li>Check eligibility — minimum marks as per stream.</li>
           <li>Download & fill application form.</li>
@@ -39,50 +50,98 @@ export default function Admission() {
           <li>Attend counselling & seat allocation.</li>
         </ol>
 
-        <a href="#apply" className="apply-btn">
-          Apply Now
-        </a>
+        <a href="#apply" className="btn download">Apply Now</a>
       </section>
 
-      {/* IMAGE GALLERY */}
+      {/* ================= IMAGE GALLERY ================= */}
       <section className="image-gallery">
         <h3>Campus Life & Facilities</h3>
 
         <div className="image-grid">
-          <div className="img-card"><img src="/ad1.jpeg" alt="Campus" /></div>
-          <div className="img-card"><img src="/ad2.webp" alt="Library" /></div>
-          <div className="img-card"><img src="/ad4.jpeg" alt="Sports" /></div>
-          <div className="img-card"><img src="/ad5.jpeg" alt="Lab" /></div>
-          <div className="img-card"><img src="/clg.png" alt="Classroom" /></div>
-          <div className="img-card"><img src="/fig6.webp" alt="Campus" /></div>
-          <div className="img-card"><img src="/fig7.avif" alt="Campus" /></div>
-          <div className="img-card"><img src="/fig9.jpeg" alt="Campus" /></div>
+          <div className="img-card circle">
+            <img src="/ad1.jpeg" alt="Campus" />
+          </div>
+
+          <div className="img-card rounded">
+            <img src="/ad2.webp" alt="Library" />
+          </div>
+
+          <div className="img-card diamond">
+            <img src="/ad4.jpeg" alt="Sports" />
+          </div>
+
+          <div className="img-card soft">
+            <img src="/ad5.jpeg" alt="Lab" />
+          </div>
+
+          <div className="img-card tilt">
+            <img src="/clg.png" alt="Classroom" />
+          </div>
+
+          <div className="img-card tilt">
+            <img src="/fig6.webp" alt="Event" />
+          </div>
+
+          <div className="img-card tilt">
+            <img src="/fig7.avif" alt="Students" />
+          </div>
+
+          <div className="img-card tilt">
+            <img src="/fig9.jpeg" alt="Campus View" />
+          </div>
         </div>
       </section>
 
-      {/* FORM SECTION */}
+      {/* ================= ENQUIRY FORM ================= */}
       <section id="apply" className="form-section">
         <h3>Quick Enquiry / Pre-Registration</h3>
 
+        {success && <p style={{ color: "green", textAlign: "center" }}>{success}</p>}
+
         <form className="form-card" onSubmit={handleSubmit}>
+
           <label>
             Student Name
-            <input type="text" name="name" required />
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
           </label>
 
           <label>
             Email
-            <input type="email" name="email" required />
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
           </label>
 
           <label>
             Phone
-            <input type="tel" name="phone" pattern="[0-9]{10}" required />
+            <input
+              type="tel"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              pattern="[0-9]{10}"
+              required
+            />
           </label>
 
           <label>
             Preferred Stream
-            <select name="stream" required>
+            <select
+              name="stream"
+              value={form.stream}
+              onChange={handleChange}
+              required
+            >
               <option value="">--Choose--</option>
               <option>PCMB</option>
               <option>PCMC</option>
@@ -93,15 +152,27 @@ export default function Admission() {
 
           <label>
             Message
-            <textarea name="message" rows="3"></textarea>
+            <textarea
+              name="message"
+              rows="3"
+              value={form.message}
+              onChange={handleChange}
+            />
           </label>
 
           <div className="form-actions">
-            <button type="submit" className="btn">Submit</button>
+            <button type="submit" className="btn">Submit Enquiry</button>
             <button type="reset" className="btn ghost">Reset</button>
           </div>
+
+          <p className="small-note" style={{ textAlign: "center" }}>
+            We will contact you within 24 working hours.<br />
+            For urgent queries call: <strong>+91 80000 00000</strong>
+          </p>
+
         </form>
       </section>
+
     </main>
   );
 }
